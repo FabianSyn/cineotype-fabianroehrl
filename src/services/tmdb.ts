@@ -4,46 +4,32 @@ import type {
   MovieDetails,
 } from "../types/movie"
 
-const BASE_URL = "https://api.themoviedb.org/3"
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY
+const PROXY_URL = import.meta.env.VITE_PROXY_URL
 
 export async function searchMovies(
   query: string
 ): Promise<Movie[]> {
-  const url =
-    `${BASE_URL}/search/movie` +
-    `?query=${encodeURIComponent(query)}` +
-    `&api_key=${API_KEY}`
-
-  const response = await fetch(url)
+  const response = await fetch(
+    `${PROXY_URL}/search?query=${encodeURIComponent(query)}`
+  )
 
   if (!response.ok) {
-    throw new Error(
-      `TMDB-Fehler: ${response.status}`
-    )
+    throw new Error(`Proxy-Fehler: ${response.status}`)
   }
 
   const data: SearchResponse = await response.json()
-
   return data.results
 }
 
 export async function getMovie(
   id: number
 ): Promise<MovieDetails> {
-  const url =
-    `${BASE_URL}/movie/${id}` +
-    `?api_key=${API_KEY}`
-
-  const response = await fetch(url)
+  const response = await fetch(`${PROXY_URL}/movie/${id}`)
 
   if (!response.ok) {
-    throw new Error(
-      `TMDB-Fehler: ${response.status}`
-    )
+    throw new Error(`Proxy-Fehler: ${response.status}`)
   }
 
   const data: MovieDetails = await response.json()
-
   return data
 }
